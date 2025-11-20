@@ -6,6 +6,7 @@ import {
   Users, 
   Package, 
   ShoppingCart, 
+  FileText,
   LogOut,
   Menu,
   X
@@ -41,6 +42,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
     { path: "/clients", icon: Users, label: "Clientes" },
     { path: "/inventory", icon: Package, label: "Inventario" },
     { path: "/orders", icon: ShoppingCart, label: "Pedidos" },
+    { path: "/billing", icon: FileText, label: "Facturación" },
   ];
 
   return (
