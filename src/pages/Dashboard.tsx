@@ -48,7 +48,7 @@ export default function Dashboard() {
         { count: clientsCount },
         { count: materialsCount },
         { count: ordersCount },
-        { data: lowStockData },
+        { data: allMaterialsData },
         { data: completedOrdersData },
       ] = await Promise.all([
         supabase.from("clients").select("*", { count: "exact", head: true }),
@@ -56,8 +56,7 @@ export default function Dashboard() {
         supabase.from("orders").select("*", { count: "exact", head: true }),
         supabase
           .from("materials")
-          .select("id, name, stock_quantity, min_stock_quantity, unit")
-          .lt("stock_quantity", "min_stock_quantity"),
+          .select("id, name, stock_quantity, min_stock_quantity, unit"),
         supabase
           .from("orders")
           .select(`
@@ -72,13 +71,18 @@ export default function Dashboard() {
           .limit(5),
       ]);
 
+      // Filtrar materiales con stock bajo en el cliente
+      const lowStockData = (allMaterialsData || []).filter(
+        (material) => material.stock_quantity < material.min_stock_quantity
+      );
+
       setStats({
         totalClients: clientsCount || 0,
         totalMaterials: materialsCount || 0,
         totalOrders: ordersCount || 0,
-        lowStockCount: lowStockData?.length || 0,
+        lowStockCount: lowStockData.length,
       });
-      setLowStockMaterials(lowStockData || []);
+      setLowStockMaterials(lowStockData);
       setCompletedOrders(completedOrdersData || []);
     };
 
